@@ -545,6 +545,9 @@ then
 	*-*-cygwin*)
 		ac_sys_system=Cygwin
 		;;
+	*-*-cykusz*)
+		ac_sys_system=Cykusz
+		;;
 	*-*-vxworks*)
 	    ac_sys_system=VxWorks
 	    ;;
@@ -609,6 +612,9 @@ if test "$cross_compiling" = yes; then
 		_host_cpu=
 		;;
 	*-*-vxworks*)
+		_host_cpu=$host_cpu
+		;;
+	*-*-cykusz*)
 		_host_cpu=$host_cpu
 		;;
 	wasm32-*-* | wasm64-*-*)
@@ -1493,7 +1499,7 @@ if test $enable_shared = "yes"; then
 	      PY3LIBRARY=libpython3.so
 	  fi
           ;;
-    Linux*|GNU*|NetBSD*|FreeBSD*|DragonFly*|OpenBSD*|VxWorks*)
+    Linux*|GNU*|NetBSD*|FreeBSD*|DragonFly*|OpenBSD*|VxWorks*|Cykusz*)
 	  LDLIBRARY='libpython$(LDVERSION).so'
 	  BLDLIBRARY='-L. -lpython$(LDVERSION)'
 	  RUNSHARED=LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
@@ -3182,7 +3188,7 @@ then
 	Emscripten|WASI)
 		LDSHARED='$(CC) -shared'
 		LDCXXSHARED='$(CXX) -shared';;
-	Linux*|GNU*|QNX*|VxWorks*|Haiku*)
+	Linux*|GNU*|QNX*|VxWorks*|Haiku*|Cykusz*)
 		LDSHARED='$(CC) -shared'
 		LDCXXSHARED='$(CXX) -shared';;
 	FreeBSD*)
@@ -3282,7 +3288,9 @@ then
 		else CCSHARED="-Kpic -belf"
 		fi;;
 	VxWorks*)
-		CCSHARED="-fpic -D__SO_PICABILINUX__  -ftls-model=global-dynamic"
+		CCSHARED="-fpic -D__SO_PICABILINUX__  -ftls-model=global-dynamic";;
+	Cykusz*)
+		CCSHARED="-fPIC"
 	esac
 fi
 AC_MSG_RESULT($CCSHARED)
@@ -3352,6 +3360,8 @@ then
 		LINKFORSHARED='-Wl,-E -N 2048K';;
 	VxWorks*)
 		LINKFORSHARED='-Wl,-export-dynamic';;
+	Cykusz*)
+		LINKFORSHARED='-Wl,--export-dynamic';;
 	esac
 fi
 AC_MSG_RESULT($LINKFORSHARED)
